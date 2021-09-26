@@ -69,7 +69,7 @@ jobs:
             Pkg.develop(PackageSpec(path=pwd()))
             Pkg.instantiate()'
             - name: "Run doctests"
-            run: |
+              run: |
                 julia --project=docs --color=yes test/doctest.jl
       - name: "Deploy documentation"
         run: julia --project=docs --color=yes docs/make.jl
