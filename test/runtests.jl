@@ -65,12 +65,12 @@ using Test
     @test nr_of_q_rational_points( H5, 1 ) == 4
     
     # Construct delPezzo surfaces
-    del_pezzo( -1 )
-    del_pezzo( 0 )
-    del_pezzo( 1 )
-    del_pezzo( 2 )
-    del_pezzo( 3 )
-    del_pezzo( 4 )
+    @test_throws ErrorException del_pezzo( -1 )
+    @test del_pezzo( 0 ) isa NormalToricVariety
+    @test del_pezzo( 1 ) isa NormalToricVariety
+    @test del_pezzo( 2 ) isa NormalToricVariety
+    @test del_pezzo( 3 ) isa NormalToricVariety
+    @test_throws ErrorException del_pezzo( 4 )
     
     # Perform tests for projective space
     P2 = JToric.projective_space( 2 )
@@ -141,16 +141,18 @@ using Test
     @test JToric.is_primedivisor( D ) == false
     @test JToric.is_basepoint_free( D ) == true
     @test JToric.is_ample( D ) == false
-    @test JToric.is_very_ample( D ) == "fail"
+    @test_throws ErrorException JToric.is_very_ample( D )
     @test JToric.is_nef( D ) == true
+
     D2 = divisor_of_character( [ 1,2 ], H5 )
     @test JToric.is_cartier( D2 ) == true
     @test JToric.is_principal( D2 ) == true
     @test JToric.is_primedivisor( D2 ) == false
     @test JToric.is_basepoint_free( D2 ) == true
     @test JToric.is_ample( D2 ) == false
-    @test JToric.is_very_ample( D2 ) == "fail"
+    @test_throws ErrorException JToric.is_very_ample( D2 )
     @test JToric.is_nef( D2 ) == true
+
     D3 = divisor_of_class( H5, [ 1,2 ] )
     @test JToric.is_cartier( D3 ) == true
     @test JToric.is_principal( D3 ) == false

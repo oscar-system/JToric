@@ -140,9 +140,8 @@ export is_ample
 For ample divisors `d`, this method checks if `d` is very ample.
 """
 function is_very_ample( d::ToricDivisor )
-    if ! is_ample( d )
-        @warn "Can (current) only tell for ample toric divisors if they are very ample."
-        return "fail"
+    if !is_ample( d )
+        error("Can (current) only tell for ample toric divisors if they are very ample")
     end
     
     return GAP.Globals.IsVeryAmple( d.GapToricDivisor )::Bool

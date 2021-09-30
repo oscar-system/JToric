@@ -152,8 +152,7 @@ NormalToricVariety(GAP: <A toric variety of dimension 2>, Polymake.BigObjectAllo
 """
 function del_pezzo( b::Int )
     if b < 0
-        @warn("Number of blowups for construction of delPezzo surfaces must be non-negative.")
-        return 0
+        error("Number of blowups for construction of delPezzo surfaces must be non-negative")
     end
     if b == 0 
         return projective_space( 2 )
@@ -174,8 +173,7 @@ function del_pezzo( b::Int )
         return NormalToricVariety( Rays, Cones )
     end
     if b > 3
-        @warn("delPezzo surfaces with more than 3 blowups are realized as subvarieties of toric ambient spaces. This is currently not supported.")
-        return 0
+        error("delPezzo surfaces with more than 3 blowups are realized as subvarieties of toric ambient spaces. This is currently not supported")
     end
 end
 export del_pezzo
