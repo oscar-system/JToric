@@ -43,35 +43,112 @@ end
 export euler_characteristic
 
 
-struct NefCone
-           polymakeNefCone::Polymake.BigObject
+@doc Markdown.doc"""
+    weil_divisors_of_variety( v::AbstractNormalToricVariety )
+
+Compute the Weil divisors of the normal toric variety `v`.
+"""
+function weil_divisors_of_variety( v::AbstractNormalToricVariety )
+    gap_divisors = GAP.Globals.WeilDivisorsOfVariety( v.GapNTV )
+    return [ToricDivisor(extract_gap_divisor_coeffs(d), v) for d in gap_divisors ]
 end
-export NefCone
+export weil_divisors_of_variety
+
+
+struct ZariskiCotangentSheafViaEulerSequence
+           GapZariskiCotangentSheafViaEulerSequence::GapObj
+end
+export ZariskiCotangentSheafViaEulerSequence
+
+
+@doc Markdown.doc"""
+    zariski_cotangent_sheaf_via_euler_sequence( v::AbstractNormalToricVariety )
+
+Computes the Zariski cotangent sheaf of the normal toric variety `v` via the Euler sequence.
+"""
+function zariski_cotangent_sheaf_via_euler_sequence( v::AbstractNormalToricVariety )
+    gap_ZariskiCotangentSheafViaEulerSequence = GAP.Globals.ZariskiCotangentSheafViaEulerSequence( v.GapNTV )
+    return ZariskiCotangentSheafViaEulerSequence( gap_ZariskiCotangentSheafViaEulerSequence )
+end
+export zariski_cotangent_sheaf_via_euler_sequence
+
+
+struct ZariskiCotangentSheafViaPoincareResidueMap
+           GapZariskiCotangentSheafViaPoincareResidueMap::GapObj
+end
+export ZariskiCotangentSheafViaPoincareResidueMap
+
+
+@doc Markdown.doc"""
+    zariski_cotangent_sheaf_via_poincare_residue_map( v::AbstractNormalToricVariety )
+
+Computes the Zariski cotangent sheaf of the normal toric variety `v` via the Poincare residue map.
+"""
+function zariski_cotangent_sheaf_via_poincare_residue_map( v::AbstractNormalToricVariety )
+    gap_ZariskiCotangentSheafViaPoincareResidueMap = GAP.Globals.ZariskiCotangentSheafViaPoincareResidueMap( v.GapNTV )
+    return ZariskiCotangentSheafViaPoincareResidueMap( gap_ZariskiCotangentSheafViaPoincareResidueMap )
+end
+export zariski_cotangent_sheaf_via_poincare_residue_map
+
+
+#struct UnderlyingSheaf
+#          GapUnderlyingSheaf::GapObj
+#end
+#export UnderlyingSheaf
+
+#function underlying_sheaf( v::AbstractNormalToricVariety )
+#   gap_Underlying = GAP.Globals.UnderlyingSheaf( v.GapNTV )
+#    return UnderlyingSheaf( gap_UnderlyingSheaf )
+#end
+#export underlying_sheaf
+
 
 """
     nef_cone( v::NormalToricVariety )
 
 Computes the nef cone of the normal toric variety `v`.
+
+# Examples
+```jldoctest
+julia> pp = projective_space(2)
+A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
+
+julia> nef = nef_cone(pp)
+A polyhedral cone in ambient dimension 1
+
+julia> using Oscar
+
+julia> rays(nef)
+1-element VectorIterator{RayVector{Polymake.Rational}}:
+ [-1]
+```
 """
-function nef_cone( v::NormalToricVariety )
-    return NefCone( v.polymakeNTV.NEF_CONE )
-end
+nef_cone( v::NormalToricVariety ) = Cone( v.polymakeNTV.NEF_CONE )
 export nef_cone
 
 
-struct MoriCone
-           polymakeNefCone::Polymake.BigObject
-end
-export MoriCone
 
 """
     mori_cone( v::NormalToricVariety )
 
 Computes the mori cone of the normal toric variety `v`.
+
+# Examples
+```jldoctest
+julia> pp = projective_space(2)
+A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
+
+julia> mori = mori_cone(pp)
+A polyhedral cone in ambient dimension 1
+
+julia> using Oscar
+
+julia> rays(mori)
+1-element VectorIterator{RayVector{Polymake.Rational}}:
+ [-1]
+```
 """
-function mori_cone( v::NormalToricVariety )
-    return MoriCone( v.polymakeNTV.MORI_CONE )
-end
+mori_cone( v::NormalToricVariety ) = Cone( v.polymakeNTV.MORI_CONE )
 export mori_cone
 
 

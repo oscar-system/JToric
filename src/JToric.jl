@@ -42,6 +42,7 @@ const version = IS_DEV ? VersionNumber("$(VERSION_NUMBER)-dev") : VERSION_NUMBER
 
 # include files
 include("NormalToricVarieties/constructors.jl")
+include("NormalToricVarieties/properties.jl")
 include("ToricDivisors.jl")
 include("AttributesAndMethods.jl")
 
