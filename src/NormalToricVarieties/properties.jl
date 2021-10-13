@@ -95,7 +95,7 @@ false
 ```
 """
 function has_torusfactor( v::AbstractNormalToricVariety )
-    return GAP.Globals.HasTorusfactor( v.GapNTV )::Bool
+    return !pm_ntv(v).FULL_DIM::Bool
 end
 export has_torusfactor
 
@@ -112,7 +112,7 @@ true
 ```
 """
 function is_orbifold( v::AbstractNormalToricVariety )
-    return GAP.Globals.IsOrbifold( v.GapNTV )::Bool
+    return pm_ntv(v).SIMPLICIAL::Bool
 end
 export is_orbifold
 
@@ -133,39 +133,6 @@ function issimplicial( v::AbstractNormalToricVariety )
 end
 export issimplicial
 
-
-@doc Markdown.doc"""
-    is_isomorphic_to_projective_space( v::AbstractNormalToricVariety )
-
-Checks if the normal toric variety `v` is isomorphic to projective space.
-
-# Examples
-```jldoctest
-julia> is_isomorphic_to_projective_space( projective_space( 2 ) )
-true
-```
-"""
-function is_isomorphic_to_projective_space( v::AbstractNormalToricVariety )
-    return GAP.Globals.IsIsomorphicToProjectiveSpace( v.GapNTV )::Bool
-end
-export is_isomorphic_to_projective_space
-
-
-@doc Markdown.doc"""
-    is_direct_product_of_projective_spaces( v::AbstractNormalToricVariety )
-
-Checks if the normal toric variety `v` is isomorphic to a direct product of projective space.
-
-# Examples
-```jldoctest
-julia> is_direct_product_of_projective_spaces( projective_space( 2 ) )
-true
-```
-"""
-function is_direct_product_of_projective_spaces( v::AbstractNormalToricVariety )
-    return GAP.Globals.IsDirectProductOfPNs( v.GapNTV )::Bool
-end
-export is_direct_product_of_projective_spaces
 
 
 @doc Markdown.doc"""

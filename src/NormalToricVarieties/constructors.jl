@@ -4,13 +4,11 @@
 abstract type AbstractNormalToricVariety end
 
 struct NormalToricVariety <: AbstractNormalToricVariety
-           GapNTV::GapObj
            polymakeNTV::Polymake.BigObject
 end
 export NormalToricVariety
 
 struct AffineNormalToricVariety <: AbstractNormalToricVariety
-           GapNTV::GapObj
            polymakeNTV::Polymake.BigObject
 end
 export AffineNormalToricVariety
@@ -43,7 +41,7 @@ A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
 """    
 function NormalToricVariety(PF::PolyhedralFan)
     pmntv = Polymake.fulton.NormalToricVariety(Oscar.pm_fan(PF))
-    return NormalToricVariety(ntv_polymake2gap(pmntv), pmntv)
+    return NormalToricVariety(pmntv)
 end
 
 
@@ -67,7 +65,7 @@ function AffineNormalToricVariety(C::Cone)
     pmc = Oscar.pm_cone(C)
     fan = Polymake.fan.check_fan_objects(pmc)
     pmntv = Polymake.fulton.NormalToricVariety(fan)
-    return AffineNormalToricVariety(ntv_polymake2gap(pmntv), pmntv)
+    return AffineNormalToricVariety(pmntv)
 end
 
 
@@ -116,53 +114,12 @@ function NormalToricVariety(C::Cone)
     pmc = Oscar.pm_cone(C)
     fan = Oscar.Polymake.fan.check_fan_objects(pmc)
     pmntv = Oscar.Polymake.fulton.NormalToricVariety(fan)
-    return NormalToricVariety(ntv_polymake2gap(pmntv))
+    return NormalToricVariety(pmntv)
 end
 
 
-@doc Markdown.doc"""
-    NormalToricVariety( r::Matrix{Int}, c::Vector{Vector{Int}} )
-
-Construct the normal toric variety whose fan has ray generators `r` and maximal cones `c`.
-
-# Examples
-```jldoctest
-julia> NormalToricVariety( [-1 5; 0 1; 1 0; 0 -1], [[1,2],[2,3],[3,4],[4,1]] )
-A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
-```
-"""
-function NormalToricVariety( rays::Matrix{Int}, cones::Vector{Vector{Int}} )
-    # construct the toric variety in GAP
-    gap_rays = GapObj( rays, recursive = true )
-    gap_cones = GapObj( cones, recursive = true )
-    fan = GAP.Globals.Fan( gap_rays, gap_cones )
-    variety = GAP.Globals.ToricVariety( fan )
-
-    # wrap it into a struct and return
-    return NormalToricVariety( variety, ntv_gap2polymake(variety) )
-end
-
-@doc Markdown.doc"""
-    NormalToricVariety( v::GapObj )
-
-Construct the Julia wrapper for a `GAP` toric variety `v`.
-"""
-function NormalToricVariety(GapNTV::GapObj)
-   pmNTV = ntv_gap2polymake(GapNTV)
-   return NormalToricVariety(GapNTV, pmNTV)
-end
-export NormalToricVariety
 
 
-@doc Markdown.doc"""
-    AffineNormalToricVariety( v::GapObj )
-
-Construct the Julia wrapper for a `GAP` toric variety `v`.
-"""
-function AffineNormalToricVariety(GapNTV::GapObj)
-   pmNTV = ntv_gap2polymake(GapNTV)
-   return AffineNormalToricVariety(GapNTV, pmNTV)
-end
 
 ######################
 # 3: Standard constructions
@@ -180,11 +137,7 @@ A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
 ```
 """
 function projective_space( d::Int )
-    # construct the projective space in gap
-    variety = GAP.Globals.ProjectiveSpace( d )
-    
-    # wrap it and return
-    return NormalToricVariety( variety, ntv_gap2polymake(variety) )
+    return NormalToricVariety(Polymake.fulton.projective_space(d))
 end
 export projective_space
 
@@ -201,9 +154,7 @@ A normal toric variety corresponding to a polyhedral fan in ambient dimension 2
 ```
 """
 function hirzebruch_surface( r::Int )
-    Rays = [ 1 0; 0 1; -1 r; 0 -1]
-    Cones = [[1,2],[2,3],[3,4],[4,1]]
-    return NormalToricVariety( Rays, Cones )
+    return NormalToricVariety(Polymake.fulton.hirzebruch_surface(r))
 end
 export hirzebruch_surface
 
@@ -229,18 +180,18 @@ function del_pezzo( b::Int )
     end
     if b == 1
         Rays = [ 1 0; 0 1; -1 0; -1 -1 ]
-        Cones = [ [1,2],[2,3],[3,4],[4,1] ]
-        return NormalToricVariety( Rays, Cones )
+        Cones = IncidenceMatrix([ [1,2],[2,3],[3,4],[4,1] ])
+        return NormalToricVariety(Oscar.PolyhedralFan(Rays, Cones))
     end
     if b == 2
         Rays = [ 1 0; 0 1; -1 0; -1 -1; 0 -1 ]
-        Cones = [ [1,2],[2,3],[3,4],[4,5],[5,1] ]
-        return NormalToricVariety( Rays, Cones )
+        Cones = IncidenceMatrix([ [1,2],[2,3],[3,4],[4,5],[5,1] ])
+        return NormalToricVariety(Oscar.PolyhedralFan(Rays, Cones))
     end
     if b == 3
         Rays = [ 1 0; 1 1; 0 1; -1 0; -1 -1; 0 -1 ]
-        Cones = [ [1,2],[2,3],[3,4],[4,5],[5,6],[6,1] ]
-        return NormalToricVariety( Rays, Cones )
+        Cones = IncidenceMatrix([ [1,2],[2,3],[3,4],[4,5],[5,6],[6,1] ])
+        return NormalToricVariety(Oscar.PolyhedralFan(Rays, Cones))
     end
     if b > 3
         throw(ArgumentError("delPezzo surfaces with more than 3 blowups are realized as subvarieties of toric ambient spaces. This is currently not supported."))
