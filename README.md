@@ -1,3 +1,5 @@
+# OBSOLETE: this package is now directly integrated into Oscar.jl
+
 # JToric
 
 [![Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://oscar-system.github.io/JToric.jl/dev)
